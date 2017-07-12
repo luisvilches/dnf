@@ -10,6 +10,7 @@ class Sempli{
         this.cors = cors;
         this.body = bodyParser;
         this.arr = [];
+        this.db = {};
         this.config();
     }
 
@@ -65,22 +66,16 @@ class Sempli{
             }
         })
     }
-}
 
-export class ORM {
-    constructor(o){
-        this.db = o;
-        this.conect();
-    }
-
-    conect(){
-        switch (this.db.engine){
+    conect(db){
+        this.db = db;
+        switch (db.engine){
             case"mongodb":
-                this.cMongo(this.db.engine);
+                this.cMongo(db.engine);
                 break;
 
             default:
-                console.log(chalk.red('-> Engine database not support'));
+                console.log(chalk.red('-> Engine database not support =>',chalk.red(db.engine)));
         }
     }
 
@@ -94,17 +89,11 @@ export class ORM {
             if(err) {
                 console.log(chalk.red('-> Error en la coneccion con la base de datos =>', err));
             } else {
-              console.log(chalk.magenta('-> Conección exitosa con la base de datos =>'), chalk.cyan(db));
+                console.log(chalk.magenta('-> Conección exitosa con la base de datos =>'), chalk.cyan(db));
             }
         });
     }
 
-    cMysql(){}
-    cPg(){}
-    cSqlite(){}
-
-    model(){}
-    save(){}
 }
 
 const app = new Sempli();

@@ -1,14 +1,12 @@
 import Sempli, {ORM} from './sempli.js';
 
-const DB = new ORM({
+Sempli.conect({
     database: 'blog',
     user: 'blog',
     pass: 'blog',
     host: 'ds151461.mlab.com:51461',
     engine: 'mongodb'
 });
-
-export default DB;
 
 Sempli.createServer(3000);
 
