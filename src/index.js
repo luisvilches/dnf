@@ -1,4 +1,7 @@
-import Sempli, {ORM} from './sempli.js';
+import Sempli from './sempli.js';
+import route from './route.js';
+
+Sempli.createServer(3000);
 
 Sempli.conect({
     database: 'blog',
@@ -8,30 +11,5 @@ Sempli.conect({
     engine: 'mongodb'
 });
 
-Sempli.createServer(3000);
-
-var route = [
-    {
-        url: '/',
-        method: 'GET',
-        handler: function (req, res) {
-            res.send('hello desde le home!')
-        }
-    },
-    {
-        url: '/all',
-        method: 'GET',
-        handler: function (req, res) {
-            res.send('hello desde all!')
-        }
-    },
-    {
-        url: '/dos',
-        method: 'GET',
-        handler: function (req, res) {
-            res.send('hello! desde dos')
-        }
-    }
-]
 
 Sempli.routes(route);
