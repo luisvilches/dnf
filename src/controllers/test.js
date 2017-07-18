@@ -1,11 +1,7 @@
 class Test {
 
     get(req,res,next){
-        return res.end('hola desde una clase externa');
+        return res.render('home');
     }
 }
-
-
-const controller = new Test();
-
-export default  controller;
+export default  Test;

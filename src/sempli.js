@@ -2,7 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import chalk from 'chalk';
-import mongoose from 'mongoose';
+//import mongoose from 'mongoose';
+import engine from 'react-engine';
+import path from 'path';
 
 class Sempli{
     constructor(){
@@ -25,8 +27,13 @@ class Sempli{
     }
 
     config(){
+        this.app.engine('.jsx', engine.server.create());
+        this.app.set('views', path.join(__dirname,'views'));
+        this.app.set('view engine', 'jsx');
+        this.app.set('view', engine.expressView);
         this.app.use(this.cors());
         this.app.use(this.body.json());
+        
     }
 
     use(args){
@@ -67,7 +74,7 @@ class Sempli{
         })
     }
 
-    conect(db){
+    /*conect(db){
         this.db = db;
         switch (db.engine){
             case"mongodb":
@@ -92,7 +99,7 @@ class Sempli{
                 console.log(chalk.magenta('-> Conección exitosa con la base de datos =>'), chalk.cyan(db));
             }
         });
-    }
+    }*/
 
 }
 
