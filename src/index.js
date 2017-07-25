@@ -1,15 +1,6 @@
-import Sempli from './sempli.js';
-import route from './route.js';
+import Sempli from './sempli';
+import Routes from './route';
+import Configuraciones from './config'
 
-Sempli.createServer(3000);
-
-/*Sempli.conect({
-    database: 'blog',
-    user: 'blog',
-    pass: 'blog',
-    host: 'ds151461.mlab.com:51461',
-    engine: 'mongodb'
-});*/
-
-
-Sempli.routes(route);
+Sempli.init(Configuraciones);
+Sempli.routes(Routes);

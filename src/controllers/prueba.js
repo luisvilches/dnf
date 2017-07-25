@@ -1,7 +1,7 @@
 class Prueba {
 
-    get(req,res,next){
-        return res.render('prueba');
+    get(req,res){
+        return res.json({data:'hello'});
     }
 }
 export default  Prueba;

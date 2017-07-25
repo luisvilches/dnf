@@ -1,39 +1,53 @@
 import express from 'express';
 import cors from 'cors';
-import bodyParser from 'body-parser';
+import middelwareParse from 'connect-multiparty';
 import chalk from 'chalk';
-//import mongoose from 'mongoose';
-import engine from 'react-engine';
-import path from 'path';
+import mongoose from 'mongoose';
+
+
+
+const body = middelwareParse();
 
 class Sempli{
     constructor(){
         this.app = express();
         this.cors = cors;
-        this.body = bodyParser;
         this.arr = [];
         this.db = {};
+        this.conf;
         this.config();
     }
 
-    createServer(port){
-        this.app.listen(port, err => {
+    init(conf){
+        this.conf = conf;
+        this.app.listen(this.conf.server.port, err => {
             if(err){
                 console.log('-> Error:','=>',err);
             }else{
-                console.log(chalk.magenta('-> Sempli server running in port'),chalk.cyan(port));
+                if (process.env.NODE_ENV != "production") {
+                    console.log(chalk.magenta('-> Sempli server running in port'),chalk.cyan(this.conf.server.port));
+                } else {
+                    console.log(chalk.magenta('-> Sempli server running in port'),chalk.cyan(this.conf.server.port));
+                }
             }
         })
+
+        if(this.conf.database == null || this.conf.database === "undefined"){
+            return;
+        }else{
+            mongoose.connect(`mongodb://${this.conf.database.user}:${this.conf.database.password}@${this.conf.database.host}/${this.conf.database.name}`, err => {
+                if(err) {
+                    console.log(chalk.red('-> Error en la coneccion con la base de datos =>', err));
+                } else {
+                    console.log(chalk.magenta('-> Conección exitosa con la base de datos =>'), chalk.cyan(this.conf.database.name));
+                }
+            });
+        }
     }
+    
 
     config(){
-        this.app.engine('.jsx', engine.server.create());
-        this.app.set('views', path.join(__dirname,'views'));
-        this.app.set('view engine', 'jsx');
-        this.app.set('view', engine.expressView);
         this.app.use(this.cors());
-        this.app.use(this.body.json());
-        
     }
 
     use(args){
@@ -49,58 +63,29 @@ class Sempli{
     }
 
     routes(routes){
-
         var app = this.app;
         routes.map(function(i){
             switch (i.method){
                 case null || 'undefined':
-                    return app.get(i.url,i.handler);
+                    return app.get(i.url,body,i.handler);
                     break;
                 case 'GET' || 'get':
-                    return app.get(i.url,i.handler);
+                    return app.get(i.url,body,i.handler);
                     break;
                 case ('POST' || 'post'):
-                    return app.post(i.url,i.handler);
+                    return app.post(i.url,body,i.handler);
                     break;
                 case ('PUT' || 'put'):
-                    return app.put(i.url,i.handler);
+                    return app.put(i.url,body,i.handler);
                     break;
                 case ('DELETE' || 'delete'):
-                    return app.delete(i.url,i.handler);
+                    return app.delete(i.url,body,i.handler);
                     break;
                 default:
                     console.log(chalk.red('* Method error => ', this.method , '->'), chalk.blue('url['+ '"'+this.url+'"]'));
             }
         })
     }
-
-    /*conect(db){
-        this.db = db;
-        switch (db.engine){
-            case"mongodb":
-                this.cMongo(db.engine);
-                break;
-
-            default:
-                console.log(chalk.red('-> Engine database not support =>',chalk.red(db.engine)));
-        }
-    }
-
-    cMongo(){
-        let user = this.db.user;
-        let pass = this.db.pass;
-        let host = this.db.host;
-        let db = this.db.database;
-
-        mongoose.connect(`mongodb://${user}:${pass}@${host}/${db}`, err => {
-            if(err) {
-                console.log(chalk.red('-> Error en la coneccion con la base de datos =>', err));
-            } else {
-                console.log(chalk.magenta('-> Conección exitosa con la base de datos =>'), chalk.cyan(db));
-            }
-        });
-    }*/
-
 }
 
 const app = new Sempli();

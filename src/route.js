@@ -1,11 +1,12 @@
 import Test from './controllers/test';
-import Prueba from './controllers/prueba'
+import Prueba from './controllers/prueba';
 
 
 export default [
     {
         url: '/',
         method: 'GET',
+        type: 'public',
         handler: function (req, res) {
             res.send('hello desde le home!');
         }
@@ -13,11 +14,13 @@ export default [
     {
         url: '/all',
         method: 'GET',
-        handler: new Test().get
+        type: 'private',
+        handler: new Test().post
     },
     {
         url: '/dos',
         method: 'GET',
+        type: 'public',
         handler: new Prueba().get
     }
 ]
